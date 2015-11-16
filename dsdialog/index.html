@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DsDialog</title>
+<link rel="stylesheet" type="text/css" href="css/base.css" />
+<script type="text/javascript" src="js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="js/dsdialog.js"></script>
+<style>
+	#demo{text-align:center;margin:50px auto;}
+	#demo p{margin:20px auto;}
+	#demo button{padding:10px 30px; width:300px; cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="demo">
+    <p><button id="demo6">基本用法-模拟alert弹出层</button></p>
+    <p><button id="demo7">基本用法-模拟confirm对话框</button></p>
+    <p><button id="demo8">基本用法-模拟prompt对话框</button></p>
+    <p><button id="demo9">基本用法-Tips方法调用</button></p>
+    <p><button id="demo1">高级用法-标准调用</button></p>
+    <p><button id="demo2">高级用法-自定义图标</button></p>
+    <p><button id="demo3">高级用法-显示按钮</button></p>
+    <p><button id="demo4">高级用法-自定义按钮文字</button></p>
+    <p><button id="demo5">高级用法-支持回调事件</button></p>
+</div>
+<script type="text/javascript">
+
+// Dialog
+var D = {
+	dialog: function(opt) {
+		ds.dialog(opt);
+	},
+	alert: function(tip) {
+		ds.dialog.alert(tip, true, "info.png");
+	},
+	confirm: function(tip, success, fail) {
+		ds.dialog.confirm(tip, success, fail);
+	},
+	prompt: function(tip, defalutValue, callback) {
+		ds.dialog.prompt(tip, callback, defalutValue);
+	},
+	tips: function(tip, time) {
+		if(time === undefined) {
+			time = 2;
+		}
+		ds.dialog.tips(tip, time, true, true);
+	}
+};
+
+$(function(){
+	$("#demo1").click(function(){
+		D.dialog({
+		   title : '消息提示',
+		   content : '你好，欢迎！',
+		   timeout:2	  
+		});
+	});
+	
+	$("#demo2").click(function(){
+		D.dialog({
+		   title : '消息提示',
+		   content : '你好，欢迎！',
+		   icon : "success.png"
+		});
+	});
+	
+	$("#demo3").click(function(){
+		D.dialog({
+		   title : '消息提示',
+		   content : '输入的数量不正确！',
+		   onyes:true,
+		   icon : "info.png"
+		});
+	});
+	
+	$("#demo4").click(function(){
+		D.dialog({
+		   title : '消息提示',
+		   content : '输入的数量不正确！',
+		   yesText : '在线支付',
+		   onyes:true,
+		   noText:'分单结算',
+		   onno:true,
+		   icon:"question.gif"
+		});
+	});
+	
+	$("#demo5").click(function(){
+		D.dialog({
+		   title : '消息提示',
+		   content : '输入的数量不正确！',
+		   yesText : '确定',
+		   onyes:function(){
+			   alert("你点击了确定！");
+			   return false;
+		   },
+		   noText : '取消',
+		   onno : function(){
+			   alert("你点击了取消！");
+			   this.close();
+		   },
+		   icon : "question.gif"
+		});
+	});
+	
+	$("#demo6").click(function(){
+		D.alert("知道了");
+	});
+	
+	$("#demo7").click(function(){
+		
+		D.confirm(
+			'确定退出吗？', 
+			function(){
+				alert('您点击了确定');
+			},
+			function(){
+				alert('您点击了取消');
+			}
+		);
+	});
+	
+	$("#demo8").click(function(){
+		D.prompt('请输入您的名称', '', function(data){
+			alert('您输入了:' + data);
+		});
+	});
+	
+	$("#demo9").click(function(){
+		D.tips('付款成功');
+	});
+});	
+</script>
+</html>
