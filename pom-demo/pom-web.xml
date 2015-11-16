@@ -1,0 +1,903 @@
+﻿<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>cn.com.hd</groupId>
+		<artifactId>hd-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../hd-parent/pom.xml</relativePath>
+	</parent>
+	<artifactId>hd-mall-web</artifactId>
+	<packaging>war</packaging>
+	<name>hd-mall-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+	
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.hd</groupId>
+			<artifactId>hd-framework-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.hd</groupId>
+			<artifactId>hd-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.hd</groupId>
+			<artifactId>hd-domain</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.hd</groupId>
+			<artifactId>hd-mall-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.com.hd</groupId>
+			<artifactId>hd-mall-service-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.8</version>
+		</dependency>
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.5.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>0.9.94</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.danlu</groupId>
+			<artifactId>dlhelp-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.10.Final</version>
+		</dependency>
+		<!-- 工作流 -->
+		<dependency>
+        	<groupId>com.danlu</groupId>
+        	<artifactId>dlworkflow-client</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+    	</dependency>
+		<!-- 权限管理系统微服务 -->
+		<dependency>
+		  <groupId>cl</groupId>
+		  <artifactId>privilege-api</artifactId>
+		  <version>1.0.0-SNAPSHOT</version>
+		</dependency>	
+	</dependencies>
+
+
+	<build>
+		<finalName>mall</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*/*</include>
+					<include>*/*/*</include>
+					<include>*</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<!-- 添加此插件以便启动jetty -->
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.16.v20140903</version>
+				<configuration>
+					<webApp>
+						<contextPath>/</contextPath>
+						<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+							<resourcesAsCSV>src/main/webapp</resourcesAsCSV>
+						</baseResource>
+					</webApp>
+					<scanIntervalSeconds>0</scanIntervalSeconds>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>8098</port>
+							<maxIdleTime>60000</maxIdleTime>
+						</connector>
+						<!-- <connector implementation="org.eclipse.jetty.server.ssl.SslSelectChannelConnector"> 
+							<port>8443</port> <keystore>/data/ssl_certs</keystore> <password>password</password> 
+							</connector> -->
+					</connectors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dhc_dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<!-- <build> <plugins> <plugin> <groupId>cn.com.dhc</groupId> <artifactId>maven-grunt-plugin</artifactId> 
+				<version>0.0.2</version> <configuration> <phase>prepare-package</phase> <goals> 
+				<goal>build</goal> </goals> <goalPrefix>grunt</goalPrefix> <autoUpdate>false</autoUpdate> 
+				<gruntPath>src/main/grunt</gruntPath> -->
+			<!-- <outputDir>src/main/resources/grunt/dest</outputDir> <copyTo>${project.build.directory}/${project.build.finalName}/resources</copyTo> -->
+			<!-- </configuration> </plugin> </plugins> </build> -->
+
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://172.16.75.187:3306/danlu_cod_cs?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>danlu</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>danlu001</pom.db.jdbc.trade.password>
+
+				<pom.db.jdbc.promotion.url>jdbc:mysql://172.16.75.187:3306/dl2promotion?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>danlu</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>danlu001</pom.db.jdbc.promotion.password>
+
+				<pom.db.jdbc.news.url>jdbc:mysql://172.16.75.187:3306/dl2cms?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>danlu</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>danlu001</pom.db.jdbc.news.password>
+
+				<pom.db.connection_pools.initial_pool_size>5</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>5</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>0</pom.file.upload.flag>
+				<pom.file.upload.serverPath>smb://172.16.75.181/upload/</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>http://172.16.75.181/upload</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>0</pom.statistics.stat.config>
+				<pom.https.enabled>0</pom.https.enabled>
+				<pom.https.jump.domain>localhost</pom.https.jump.domain>
+				<pom.https.jump.port>8443</pom.https.jump.port>
+				<pom.https.return.domain>localhost</pom.https.return.domain>
+				<pom.https.return.port>8080</pom.https.return.port>
+
+				<pom.log4j.level>debug</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>172.16.75.183</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11211</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username></pom.memcached.cache_username>
+				<pom.memcached.cache_password></pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/700000000000001.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>000000</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay></pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://202.101.25.181/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://202.101.25.181/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://202.101.25.181/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://172.16.75.180:8090/mall/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://172.16.75.180:8090/mall/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://172.16.75.180:8090/mall/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://172.16.75.180:8090/mall/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>123456</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>#{servletContext.contextPath}</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url></pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://172.16.75.180:8120/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://172.16.75.180:8120/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>600000</pom.session.timeout>
+				<pom.session.validation.interval>30000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://172.16.75.180:8100/mallws</pom.app.pageURL>
+				<pom.comminfo.price>http://idanlu.com/danlu_price_test/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				<pom.comminfo.price>http://idanlu.com/danlu_price_test/index.php</pom.comminfo.price>
+
+				<pom.dubbo.register.address>zookeeper://172.16.75.180:2181</pom.dubbo.register.address>
+				<pom.dubbo.register.address.privilege>zookeeper://123.57.61.254:2181</pom.dubbo.register.address.privilege>
+				<pom.privilege.service>http://123.57.228.235:8080/privilege-api-server</pom.privilege.service>
+				
+				<pom.payment.danlunPay2nd>http://172.16.75.101:8086/bindPayment/payment.html</pom.payment.danlunPay2nd>
+				<pom.payment.danlunB2BPay2nd>http://172.16.75.101:8086/b2bPayment/payment.html</pom.payment.danlunB2BPay2nd>
+				<pom.payment.frontB2BReturnUrl2nd>http://localhost:8080/mall/b2bPayment2nd/b2bPaySuccessOrFail.html</pom.payment.frontB2BReturnUrl2nd>
+				<pom.payment.backB2BReturnUrl2nd>http://localhost:8080/mall/b2bPayment2nd/b2b2ndPayBackInvoke.html</pom.payment.backB2BReturnUrl2nd>
+				<pom.payment.bindingBankCardUrl>http://172.16.75.101:8086/binding/bankCardManage.html</pom.payment.bindingBankCardUrl>
+				<pom.payment.paymentChangePasswordUrl>http://172.16.75.101:8086/paymentChangePassword/paymentChangePasswordInit.html</pom.payment.paymentChangePasswordUrl>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>dhc_test</id>
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://172.16.75.188:3306/dl2cd?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>danlu</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>danlu001</pom.db.jdbc.trade.password>
+
+				<pom.db.jdbc.promotion.url>jdbc:mysql://172.16.75.188:3306/dl2promotion?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>danlu</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>danlu001</pom.db.jdbc.promotion.password>
+
+				<pom.db.jdbc.news.url>jdbc:mysql://172.16.75.188:3306/dl2cms?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>danlu</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>danlu001</pom.db.jdbc.news.password>
+
+				<pom.db.connection_pools.initial_pool_size>5</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>5</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>0</pom.file.upload.flag>
+				<pom.file.upload.serverPath>smb://172.16.75.181/upload/</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>http://172.16.75.181/upload</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>0</pom.statistics.stat.config>
+				<pom.https.enabled>0</pom.https.enabled>
+				<pom.https.jump.domain>172.16.75.207</pom.https.jump.domain>
+				<pom.https.jump.port>8443</pom.https.jump.port>
+				<pom.https.return.domain>172.16.75.207</pom.https.return.domain>
+				<pom.https.return.port>8090</pom.https.return.port>
+
+				<pom.log4j.level>debug</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>172.16.75.183</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11213</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username></pom.memcached.cache_username>
+				<pom.memcached.cache_password></pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/700000000000001.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>000000</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay></pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://202.101.25.181/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://202.101.25.181/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://202.101.25.181/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://172.16.75.207:8090/mall/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://172.16.75.207:8090/mall/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://172.16.75.207:8090/mall/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://172.16.75.207:8090/mall/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>123456</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>#{servletContext.contextPath}</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url></pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://172.16.75.180:8120/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://172.16.75.180:8120/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>600000</pom.session.timeout>
+				<pom.session.validation.interval>30000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://172.16.75.180:8100/mallws</pom.app.pageURL>
+				<pom.comminfo.price>http://idanlu.com/danlu_price_test/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				<pom.comminfo.price>http://idanlu.com/danlu_price_test/index.php</pom.comminfo.price>
+
+				<pom.dubbo.register.address>zookeeper://172.16.75.207:2181</pom.dubbo.register.address>
+				<pom.dubbo.register.address.privilege>zookeeper://123.57.61.254:2181</pom.dubbo.register.address.privilege>
+				<pom.privilege.service>http://123.57.228.235:8080/privilege-api-server</pom.privilege.service>
+				<pom.payment.danlunPay2nd>http://172.16.75.207:8086/bindPayment/payment.html</pom.payment.danlunPay2nd>
+				<pom.payment.danlunB2BPay2nd>http://172.16.75.207:8086/b2bPayment/payment.html</pom.payment.danlunB2BPay2nd>
+				<pom.payment.frontB2BReturnUrl2nd>http://172.16.75.207:8090/mall/b2bPayment2nd/b2bPaySuccessOrFail.html</pom.payment.frontB2BReturnUrl2nd>
+				<pom.payment.backB2BReturnUrl2nd>http://172.16.75.207:8090/mall/b2bPayment2nd/b2b2ndPayBackInvoke.html</pom.payment.backB2BReturnUrl2nd>
+				<pom.payment.bindingBankCardUrl>http://172.16.75.207:8086/binding/bankCardManage.html</pom.payment.bindingBankCardUrl>
+				<pom.payment.paymentChangePasswordUrl>http://172.16.75.207:8086/paymentChangePassword/paymentChangePasswordInit.html</pom.payment.paymentChangePasswordUrl>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cn.com.dhc</groupId>
+						<artifactId>maven-grunt-plugin</artifactId>
+						<version>0.0.2</version>
+						<configuration>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+							<goalPrefix>grunt</goalPrefix>
+							<autoUpdate>false</autoUpdate>
+							<!--<gruntPath>src/main/grunt</gruntPath> -->
+							<!-- <outputDir>src/main/resources/grunt/dest</outputDir> <copyTo>${project.build.directory}/${project.build.finalName}/resources</copyTo> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://danlu2test.mysql.rds.aliyuncs.com:3406/dl_cd_cs?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>danlu2_test</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>b49d2591f2a0577B</pom.db.jdbc.trade.password>
+				<pom.db.jdbc.promotion.url>jdbc:mysql://danlu2test.mysql.rds.aliyuncs.com:3406/dl_promotion?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>danlu2_test</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>b49d2591f2a0577B</pom.db.jdbc.promotion.password>
+				<pom.db.jdbc.news.url>jdbc:mysql://danlu2test.mysql.rds.aliyuncs.com:3406/dl_cms?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>danlu2_test</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>b49d2591f2a0577B</pom.db.jdbc.news.password>
+				<pom.db.connection_pools.initial_pool_size>5</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>5</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>1</pom.file.upload.flag>
+				<pom.file.upload.serverPath>/data/upload</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>/data/upload/</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>1</pom.statistics.stat.config>
+
+				<pom.https.enabled>0</pom.https.enabled>
+				<pom.https.jump.domain>123.57.244.205</pom.https.jump.domain>
+				<pom.https.jump.port>8443</pom.https.jump.port>
+				<pom.https.return.domain>123.57.244.205</pom.https.return.domain>
+				<pom.https.return.port>8090</pom.https.return.port>
+
+				<pom.log4j.level>error</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>6cb0985453104e43.m.cnbjalicm12pub001.ocs.aliyuncs.com</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11211</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username>6cb0985453104e43</pom.memcached.cache_username>
+				<pom.memcached.cache_password>b49d2591f2a0577B</pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/danlu_b2b.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>danlu2015</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay>http://125.70.227.181:8097/lzljSkip/DlTranServlet</pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://unionpaysecure.com/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://unionpaysecure.com/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://unionpaysecure.com/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://neice.danlu.com/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://neice.danlu.com/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://neice.danlu.com/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://neice.danlu.com/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>danlu423</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>#{servletContext.contextPath}</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url></pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://news.danlu.com/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://news.danlu.com/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>1800000</pom.session.timeout>
+				<pom.session.validation.interval>60000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://app.danlu.com</pom.app.pageURL>
+
+				<pom.comminfo.price>http://idanlu.com/danlu_price_test/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				
+				<pom.dubbo.register.address>zookeeper://10.170.246.225:2181?backup=10.51.83.184:2181,10.51.101.17:2181</pom.dubbo.register.address>
+				<pom.dubbo.register.address.privilege>zookeeper://10.170.246.225:2181?backup=10.51.83.184:2181,10.51.101.17:2181</pom.dubbo.register.address.privilege>
+				<pom.privilege.service>http://123.57.210.61:9000/privilege-api-server</pom.privilege.service>
+
+				<pom.payment.danlunPay2nd>http://pay-test.danlu.com:8090/dlpay/bindPayment/paymentCard.html</pom.payment.danlunPay2nd>
+				<pom.payment.danlunB2BPay2nd>http://pay-test.danlu.com:8090/dlpay/b2bPayment.html</pom.payment.danlunB2BPay2nd>
+				<pom.payment.frontB2BReturnUrl2nd>http://neice.danlu.com/b2bPayment2nd/b2bPaySuccessOrFail.html</pom.payment.frontB2BReturnUrl2nd>
+				<pom.payment.backB2BReturnUrl2nd>http://neice.danlu.com/b2bPayment2nd/b2b2ndPayBackInvoke.html</pom.payment.backB2BReturnUrl2nd>
+				<pom.payment.bindingBankCardUrl>http://pay-test.danlu.com:8090/dlpay/binding/bankCardManage.html</pom.payment.bindingBankCardUrl>
+				<pom.payment.paymentChangePasswordUrl>http://pay-test.danlu.com:8090/dlpay/paymentChangePassword/paymentChangePasswordInit.html</pom.payment.paymentChangePasswordUrl>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>uat</id>
+			<!-- ip:123.57.75.167 -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cn.com.dhc</groupId>
+						<artifactId>maven-grunt-plugin</artifactId>
+						<version>0.0.2</version>
+						<configuration>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+							<goalPrefix>grunt</goalPrefix>
+							<autoUpdate>false</autoUpdate>
+							<!--<gruntPath>src/main/grunt</gruntPath> -->
+							<!-- <outputDir>src/main/resources/grunt/dest</outputDir> <copyTo>${project.build.directory}/${project.build.finalName}/resources</copyTo> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://danluwan2.mysql.rds.aliyuncs.com:3306/danlu_uat_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>danlu</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>Py21070200601</pom.db.jdbc.trade.password>
+				<pom.db.jdbc.promotion.url>jdbc:mysql://danluwan2.mysql.rds.aliyuncs.com:3306/danlu_promotion_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>danlu</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>Py21070200601</pom.db.jdbc.promotion.password>
+				<pom.db.jdbc.news.url>jdbc:mysql://danluwan2.mysql.rds.aliyuncs.com:3306/danlu_cms_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>danlu</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>Py21070200601</pom.db.jdbc.news.password>
+				<pom.db.connection_pools.initial_pool_size>5</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>10</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>1</pom.file.upload.flag>
+				<pom.file.upload.serverPath>/data/upload</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>/data/upload/</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>1</pom.statistics.stat.config>
+
+				<pom.https.enabled>1</pom.https.enabled>
+				<pom.https.jump.domain>123.57.75.167</pom.https.jump.domain>
+				<pom.https.jump.port>8443</pom.https.jump.port>
+				<pom.https.return.domain>123.57.75.167</pom.https.return.domain>
+				<pom.https.return.port>8090</pom.https.return.port>
+
+				<pom.log4j.level>trace</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>127.0.0.1</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11211</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username>root</pom.memcached.cache_username>
+				<pom.memcached.cache_password></pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/danlu_b2b.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>danlu2015</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay>http://125.70.227.181:8097/lzljSkip/DlTranServlet</pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://unionpaysecure.com/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://unionpaysecure.com/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://unionpaysecure.com/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://123.57.75.167:8090/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://123.57.75.167:8090/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://123.57.75.167:8090/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://123.57.75.167:8090/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>danlu423</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>http://danlu-uat.oss-cn-beijing.aliyuncs.com</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url>http://danlu-cache.oss-cn-hangzhou.aliyuncs.com/mobile/uat/android/danlu_store.apk</pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://123.57.75.167:8120/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://123.57.75.167:8120/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>1800000</pom.session.timeout>
+				<pom.session.validation.interval>60000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://123.57.152.182:8100/mallws</pom.app.pageURL>
+
+				<pom.comminfo.price>http://idanlu.com/danlu_price_uat/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				<pom.dubbo.register.address>zookeeper://10.173.10.109:2181</pom.dubbo.register.address>
+			</properties>
+		</profile>
+
+
+		<profile>
+			<id>pdu</id>
+			<!-- ip:www.danlu.com -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cn.com.dhc</groupId>
+						<artifactId>maven-grunt-plugin</artifactId>
+						<version>0.0.2</version>
+						<configuration>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+							<goalPrefix>grunt</goalPrefix>
+							<autoUpdate>false</autoUpdate>
+							<!--<gruntPath>src/main/grunt</gruntPath> -->
+							<!-- <outputDir>src/main/resources/grunt/dest</outputDir> <copyTo>${project.build.directory}/${project.build.finalName}/resources</copyTo> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://danlu2pdu.mysql.rds.aliyuncs.com:3406/danlu_cd_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>danlu</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>F91A439FE984f209</pom.db.jdbc.trade.password>
+				<pom.db.jdbc.promotion.url>jdbc:mysql://danlu2pdu.mysql.rds.aliyuncs.com:3406/dlpromotion?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>danlu</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>F91A439FE984f209</pom.db.jdbc.promotion.password>
+				<pom.db.jdbc.news.url>jdbc:mysql://danlu2pdu.mysql.rds.aliyuncs.com:3406/dlcms?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>danlu</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>F91A439FE984f209</pom.db.jdbc.news.password>
+				<pom.db.connection_pools.initial_pool_size>10</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>10</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>1</pom.file.upload.flag>
+				<pom.file.upload.serverPath>/data/upload</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>/data/upload/</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>1</pom.statistics.stat.config>
+
+				<pom.https.enabled>0</pom.https.enabled>
+				<pom.https.jump.domain>www.danlu.com</pom.https.jump.domain>
+				<pom.https.jump.port>8443</pom.https.jump.port>
+				<pom.https.return.domain>www.danlu.com</pom.https.return.domain>
+				<pom.https.return.port>8090</pom.https.return.port>
+
+				<pom.log4j.level>info</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>6cb0985453104e43.m.cnbjalicm12pub001.ocs.aliyuncs.com</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11211</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username>6cb0985453104e43</pom.memcached.cache_username>
+				<pom.memcached.cache_password>b49d2591f2a0577B</pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/danlu_b2b.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>danlu2015</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay>http://125.70.227.181:8097/lzljSkip/DlTranServlet</pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://unionpaysecure.com/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://unionpaysecure.com/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://unionpaysecure.com/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://neice.danlu.com/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://neice.danlu.com/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://neice.danlu.com/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://neice.danlu.com/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>danlu423</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>#{servletContext.contextPath}</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url></pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://news.danlu.com/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://news.danlu.com/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>1800000</pom.session.timeout>
+				<pom.session.validation.interval>60000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://app.danlu.com</pom.app.pageURL>
+
+				<pom.comminfo.price>http://idanlu.com/danlu_price_test/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				
+				<pom.dubbo.register.address>zookeeper://10.170.246.225:2181?backup=10.51.83.184:2181,10.51.101.17:2181</pom.dubbo.register.address>
+				<pom.dubbo.register.address.privilege>zookeeper://10.170.246.225:2181?backup=10.51.83.184:2181,10.51.101.17:2181</pom.dubbo.register.address.privilege>
+				<pom.privilege.service>http://123.57.210.61:9000/privilege-api-server</pom.privilege.service>
+
+				<pom.payment.danlunPay2nd>http://pay-test.danlu.com:8090/bindPayment/paymentCard.html</pom.payment.danlunPay2nd>
+				<pom.payment.danlunB2BPay2nd>http://pay-test.danlu.com:8090/b2bPayment.html</pom.payment.danlunB2BPay2nd>
+				<pom.payment.frontB2BReturnUrl2nd>http://neice.danlu.com/b2bPayment2nd/b2bPaySuccessOrFail.html</pom.payment.frontB2BReturnUrl2nd>
+				<pom.payment.backB2BReturnUrl2nd>http://neice.danlu.com/b2bPayment2nd/b2b2ndPayBackInvoke.html</pom.payment.backB2BReturnUrl2nd>
+				<pom.payment.bindingBankCardUrl>http://pay-test.danlu.com:8090/binding/bankCardManage.html</pom.payment.bindingBankCardUrl>
+				<pom.payment.paymentChangePasswordUrl>http://pay-test.danlu.com:8090/paymentChangePassword/paymentChangePasswordInit.html</pom.payment.paymentChangePasswordUrl>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>disaster</id>
+			<!-- ip:www.danlu.com -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cn.com.dhc</groupId>
+						<artifactId>maven-grunt-plugin</artifactId>
+						<version>0.0.2</version>
+						<configuration>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+							<goalPrefix>grunt</goalPrefix>
+							<autoUpdate>false</autoUpdate>
+							<!--<gruntPath>src/main/grunt</gruntPath> -->
+							<!-- <outputDir>src/main/resources/grunt/dest</outputDir> <copyTo>${project.build.directory}/${project.build.finalName}/resources</copyTo> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://danlulan.mysql.rds.aliyuncs.com:3306/danlu_cd_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>danlu</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>Py21070200601</pom.db.jdbc.trade.password>
+				<pom.db.jdbc.promotion.url>jdbc:mysql://danlulan.mysql.rds.aliyuncs.com:3306/danlu_promotion_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>danlu</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>Py21070200601</pom.db.jdbc.promotion.password>
+				<pom.db.jdbc.news.url>jdbc:mysql://danlulan.mysql.rds.aliyuncs.com:3306/danlu_cms_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>danlu</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>Py21070200601</pom.db.jdbc.news.password>
+				<pom.db.connection_pools.initial_pool_size>50</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>50</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>1</pom.file.upload.flag>
+				<pom.file.upload.serverPath>/data/upload</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>/data/upload/</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>1</pom.statistics.stat.config>
+
+				<pom.https.enabled>1</pom.https.enabled>
+				<pom.https.jump.domain>182.92.213.190</pom.https.jump.domain>
+				<pom.https.jump.port>443</pom.https.jump.port>
+				<pom.https.return.domain>182.92.213.190</pom.https.return.domain>
+				<pom.https.return.port>80</pom.https.return.port>
+
+				<pom.log4j.level>trace</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>127.0.0.1</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11211</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username>root</pom.memcached.cache_username>
+				<pom.memcached.cache_password></pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/danlu_b2b.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>danlu2015</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay>http://125.70.227.181:8097/lzljSkip/DlTranServlet</pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://unionpaysecure.com/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://unionpaysecure.com/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://unionpaysecure.com/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://182.92.213.190/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://182.92.213.190/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://182.92.213.190/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://182.92.213.190/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>danlu423</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>#{servletContext.contextPath}</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url>http://danlu-cache.oss-cn-hangzhou.aliyuncs.com/mobile/client/android/danlu_store.apk</pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://182.92.213.190:8120/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://182.92.213.190:8120/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>1800000</pom.session.timeout>
+				<pom.session.validation.interval>60000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://182.92.213.190:8100/mallws</pom.app.pageURL>
+
+				<pom.comminfo.price>http://idanlu.com/danlu_price/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				<pom.dubbo.register.address>zookeeper://10.173.22.193:2181</pom.dubbo.register.address>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>danlu_dev</id>
+<!-- 			<activation> -->
+<!-- 				<activeByDefault>true</activeByDefault> -->
+<!-- 			</activation> -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cn.com.dhc</groupId>
+						<artifactId>maven-grunt-plugin</artifactId>
+						<version>0.0.2</version>
+						<configuration>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+							<goalPrefix>grunt</goalPrefix>
+							<autoUpdate>false</autoUpdate>
+							<!--<gruntPath>src/main/grunt</gruntPath> -->
+							<!-- <outputDir>src/main/resources/grunt/dest</outputDir> <copyTo>${project.build.directory}/${project.build.finalName}/resources</copyTo> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<pom.db.jdbc.trade.url>jdbc:mysql://1.idanlu.com:3306/danlu_cd_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.trade.url>
+				<pom.db.jdbc.trade.username>root</pom.db.jdbc.trade.username>
+				<pom.db.jdbc.trade.password>idanlu</pom.db.jdbc.trade.password>
+				<pom.db.jdbc.promotion.url>jdbc:mysql://1.idanlu.com:3306/danlu_promotion_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.promotion.url>
+				<pom.db.jdbc.promotion.username>root</pom.db.jdbc.promotion.username>
+				<pom.db.jdbc.promotion.password>idanlu</pom.db.jdbc.promotion.password>
+				<pom.db.jdbc.news.url>jdbc:mysql://1.idanlu.com:3306/danlu_cms_database?useUnicode=true&amp;characterEncoding=UTF-8</pom.db.jdbc.news.url>
+				<pom.db.jdbc.news.username>root</pom.db.jdbc.news.username>
+				<pom.db.jdbc.news.password>idanlu</pom.db.jdbc.news.password>
+				<pom.db.connection_pools.initial_pool_size>50</pom.db.connection_pools.initial_pool_size>
+				<pom.db.connection_pools.min_pool_size>50</pom.db.connection_pools.min_pool_size>
+				<pom.db.connection_pools.max_pool_size>100</pom.db.connection_pools.max_pool_size>
+				<pom.db.connection_pools.max_idle_time>600</pom.db.connection_pools.max_idle_time>
+				<pom.db.connection_pools.acquire_increment>5</pom.db.connection_pools.acquire_increment>
+				<pom.db.connection_pools.checkout_timeout>60000</pom.db.connection_pools.checkout_timeout>
+
+				<pom.file.upload.flag>1</pom.file.upload.flag>
+				<pom.file.upload.serverPath>/data/upload</pom.file.upload.serverPath>
+				<pom.file.upload.dbPath>/data/upload/</pom.file.upload.dbPath>
+
+				<pom.statistics.log.dir>/data/stat_log</pom.statistics.log.dir>
+				<pom.statistics.prefix>record</pom.statistics.prefix>
+				<pom.statistics.stat.config>1</pom.statistics.stat.config>
+
+				<pom.https.enabled>0</pom.https.enabled>
+				<pom.https.jump.domain>www.danlu.com</pom.https.jump.domain>
+				<pom.https.jump.port>443</pom.https.jump.port>
+				<pom.https.return.domain>www.danlu.com</pom.https.return.domain>
+				<pom.https.return.port>80</pom.https.return.port>
+
+				<pom.log4j.level>error</pom.log4j.level>
+				<pom.memcached.cache_server_ip0>1.idanlu.com</pom.memcached.cache_server_ip0>
+				<pom.memcached.cache_server_port0>11211</pom.memcached.cache_server_port0>
+				<pom.memcached.cache_username></pom.memcached.cache_username>
+				<pom.memcached.cache_password></pom.memcached.cache_password>
+				<pom.memcached.cache_protocol>binary</pom.memcached.cache_protocol>
+
+				<pom.mpi.b2b.signCert.path>/data/certs/danlu_b2b.pfx</pom.mpi.b2b.signCert.path>
+				<pom.mpi.b2b.signCert.pwd>danlu2015</pom.mpi.b2b.signCert.pwd>
+
+				<pom.payment.gateYLSWWay>http://125.70.227.181:8097/lzljSkip/DlTranServlet</pom.payment.gateYLSWWay>
+				<pom.payment.frontRequestUrl>https://unionpaysecure.com/gateway/api/frontTransRequest.do</pom.payment.frontRequestUrl>
+				<pom.payment.backRequestUrl>https://unionpaysecure.com/gateway/api/backTransRequest.do</pom.payment.backRequestUrl>
+				<pom.payment.queryRequestUrl>https://unionpaysecure.com/gateway/api/singleQueryRequest.do</pom.payment.queryRequestUrl>
+				<pom.payment.frontReturnUrl>http://www.danlu.com/binding/returnUnionBind.html</pom.payment.frontReturnUrl>
+				<pom.payment.backReturnUrl>http://www.danlu.com/binding/returnUnionBind.html</pom.payment.backReturnUrl>
+				<pom.payment.B2BPayFrontReturnUrl>http://www.danlu.com/b2bPayment/b2bPaySuccess.html</pom.payment.B2BPayFrontReturnUrl>
+				<pom.payment.B2BPayBackReturnUrl>http://www.danlu.com/b2bPayment/paymentReturn.html</pom.payment.B2BPayBackReturnUrl>
+				<pom.payment.confirmLocalFilePath>/data/confirmFiles</pom.payment.confirmLocalFilePath>
+				<pom.payment.confirmFtpFilePath>/</pom.payment.confirmFtpFilePath>
+				<pom.payment.ftpPath>127.0.0.1</pom.payment.ftpPath>
+				<pom.payment.ftpPort>8085</pom.payment.ftpPort>
+				<pom.payment.ftpAccount>danlu</pom.payment.ftpAccount>
+				<pom.payment.ftpPassword>danlu423</pom.payment.ftpPassword>
+
+				<pom.files.resourceBase>#{servletContext.contextPath}</pom.files.resourceBase>
+				<pom.mobile.app.donwload.url>http://danlu-cache.oss-cn-hangzhou.aliyuncs.com/mobile/client/android/danlu_store.apk</pom.mobile.app.donwload.url>
+				<pom.home.page.news.url>http://news.danlu.com/news-mall/foreground/newsChoice/NewsChoiceInit.html?news_kinds=all</pom.home.page.news.url>
+				<pom.home.page.news.url_HomePage>http://news.danlu.com/news-mall/foreground/newsChoice/NewsChoiceInitHomepage.html</pom.home.page.news.url_HomePage>
+
+				<pom.session.timeout>1800000</pom.session.timeout>
+				<pom.session.validation.interval>60000</pom.session.validation.interval>
+
+				<pom.resource.compress.js></pom.resource.compress.js>
+				<pom.resource.compress.css></pom.resource.compress.css>
+
+				<pom.profile.warn.time.ms>50</pom.profile.warn.time.ms>
+
+				<pom.app.pageURL>http://app.danlu.com</pom.app.pageURL>
+
+				<pom.comminfo.price>http://idanlu.com/danlu_price/index.php</pom.comminfo.price>
+				<pom.mobile.ios.donwload.url>https://itunes.apple.com/cn/app/dan-lu-dian-pu/id971492968?mt=8</pom.mobile.ios.donwload.url>
+				
+				<pom.dubbo.register.address>zookeeper://123.56.142.84:2181</pom.dubbo.register.address>
+				<pom.dubbo.register.address.privilege>zookeeper://123.56.142.84:2181?backup=123.57.224.109:2181,123.57.244.205:2181</pom.dubbo.register.address.privilege>
+				<pom.privilege.service>http://123.57.210.61:9000/privilege-api-server</pom.privilege.service>
+				
+				<pom.payment.danlunPay2nd>https://172.16.75.101:8086/bindPayment/payment.html</pom.payment.danlunPay2nd>
+				<pom.payment.danlunB2BPay2nd>https://172.16.75.101:8086/b2bPayment/payment.html</pom.payment.danlunB2BPay2nd>
+				<pom.payment.frontB2BReturnUrl2nd>http://localhost:8080/mall/b2bPayment2nd/b2bPaySuccessOrFail.html</pom.payment.frontB2BReturnUrl2nd>
+				<pom.payment.backB2BReturnUrl2nd>http://localhost:8080/mall/b2bPayment2nd/b2b2ndPayBackInvoke.html</pom.payment.backB2BReturnUrl2nd>
+				<pom.payment.bindingBankCardUrl>https://172.16.75.101:8086/binding/bankCardManage.html</pom.payment.bindingBankCardUrl>
+				<pom.payment.paymentChangePasswordUrl>https://172.16.75.101:8086/paymentChangePassword/paymentChangePasswordInit.html</pom.payment.paymentChangePasswordUrl>
+			</properties>
+		</profile>
+	</profiles>
+</project>

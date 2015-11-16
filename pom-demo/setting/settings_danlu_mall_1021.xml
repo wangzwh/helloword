@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<localRepository>D:\mvnRepository_mall2end\</localRepository>
+	
+  <mirrors>
+    <mirror>
+      <mirrorOf>*</mirrorOf>
+      <name>Public Repositories</name>
+      <url>http://172.16.75.184:8091/nexus/content/groups/public/</url>
+      <id>public</id>
+    </mirror>
+  </mirrors>
+  
+  <profiles>
+    <profile>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>repo</name>
+          <url>http://172.16.25.79/artifactory/repo</url>
+        </repository>
+        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>repo</name>
+          <url>http://172.16.25.79/artifactory/repo</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>repo</name>
+          <url>http://172.16.25.79/artifactory/repo</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>repo</name>
+          <url>http://172.16.25.79/artifactory/repo</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <id>artifactory</id>
+    </profile>
+  </profiles>
+  
+  <servers>
+	<server>
+		<id>releases</id>
+		<username>deployment</username>
+		<password>deployment</password>
+	</server>
+	<server>
+		<id>snapshots</id>
+		<username>deployment</username>
+		<password>deployment</password>
+	</server>
+	<server>
+		<id>thirdparty</id>
+		<username>deployment</username>
+		<password>deployment</password>
+	</server>
+  </servers>
+  
+  <pluginGroups>
+	<pluginGroup>org.mortbay.jetty</pluginGroup>
+	<pluginGroup>org.codehaus.cargo</pluginGroup>
+  </pluginGroups>
+  
+  <activeProfiles>
+    <activeProfile>artifactory</activeProfile>
+  </activeProfiles>
+</settings>
